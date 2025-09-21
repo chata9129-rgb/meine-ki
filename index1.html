@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>KI Chatbot Demo</title>
+    <style>
+        body {
+            background: #181a20;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        h1 {
+            margin-top: 32px;
+            color: #f3f6fa;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        #chatbox {
+            width: 100%;
+            max-width: 420px;
+            background: #23262f;
+            border-radius: 18px;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.25);
+            padding: 28px 18px 18px 18px;
+            margin: 32px 0 0 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 350px;
+        }
+        .msg {
+            margin: 10px 0;
+            padding: 10px 16px;
+            border-radius: 14px;
+            max-width: 80%;
+            font-size: 1.08em;
+            line-height: 1.5;
+            word-break: break-word;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .user {
+            background: linear-gradient(90deg, #3a8dde 0%, #5f6eed 100%);
+            color: #fff;
+            align-self: flex-end;
+        }
+        .bot {
+            background: #232b3b;
+            color: #e0e6f3;
+            align-self: flex-start;
+        }
+        #inputRow {
+            display: flex;
+            margin-top: 18px;
+            width: 100%;
+            max-width: 420px;
+        }
+        #userInput {
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1.5px solid #2e3340;
+            background: #23262f;
+            color: #f3f6fa;
+            font-size: 1em;
+            outline: none;
+            transition: border 0.2s;
+        }
+        #userInput:focus {
+            border: 1.5px solid #3a8dde;
+        }
+        #sendBtn {
+            margin-left: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #3a8dde 0%, #5f6eed 100%);
+            color: #fff;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+            <script>
+            window.onload = function() {
+                const chatbox = document.getElementById('chatbox');
+                const userInput = document.getElementById('userInput');
+                const sendBtn = document.getElementById('sendBtn');
+                const saveBtn = document.getElementById('saveBtn');
+                let chatHistory = [];
+
+                function addMsg(text, sender, typing=false) {
+                    const div = document.createElement('div');
+                    div.className = 'msg ' + sender;
+                    chatbox.appendChild(div);
+                    chatHistory.push({text, sender});
+                    if (!typing) {
+                        // Als Textknoten einfügen (XSS-Schutz)
+                        div.appendChild(document.createTextNode(text));
+                        chatbox.scrollTop = chatbox.scrollHeight;
+                        return;
+                    }
+                    // Tipp-Animation für KI (sicher)
+                    let i = 0;
+                    function typeNext() {
+                        if (i <= text.length) {
+                            div.textContent = '';
+                            div.appendChild(document.createTextNode(text.slice(0, i)));
+                            chatbox.scrollTop = chatbox.scrollHeight;
+                            i++;
+                            setTimeout(typeNext, 22);
+                        }
+                    }
+                    typeNext();
+                }
+                // Chat speichern als Textdatei
+                saveBtn.onclick = function() {
+                    let text = '';
+                    for (const msg of chatHistory) {
+                        text += (msg.sender === 'user' ? 'Du: ' : 'KI: ') + msg.text + '\n';
+                    }
+                    const blob = new Blob([text], {type: 'text/plain'});
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'chat.txt';
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(() => {
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    }, 100);
+                };
+
+                function fakeAIResponse(userText) {
+                    // Hier kann später eine echte KI-API angebunden werden
+                    if (userText.toLowerCase().includes('hallo')) return 'Hallo! Wie kann ich dir helfen?';
+                    if (userText.toLowerCase().includes('name')) return 'Ich bin ein KI-Chatbot.';
+                    if (userText.toLowerCase().includes('wetter')) return 'Ich kann das Wetter leider nicht abrufen.';
+                    return 'Das klingt interessant! Erzähl mir mehr.';
+                }
+
+                function sendMsg() {
+                    </style>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+                    <meta name="apple-mobile-web-app-capable" content="yes">
+                    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+                    <meta name="apple-mobile-web-app-title" content="KI Chatbot">
+                    <meta name="format-detection" content="telephone=no">
+                    <title>KI Chatbot</title>
+                </head>
+                <body>
+                    <h1>KI Chatbot</h1>
+                    <div style="margin-bottom:10px;max-width:420px;width:100%">
+                        <input type="password" id="apiKeyInput" placeholder="OpenAI API-Key (wird nur lokal genutzt)" style="width:100%;padding:10px;border-radius:10px;border:1.5px solid #2e3340;background:#23262f;color:#f3f6fa;font-size:1em;outline:none;margin-bottom:8px;" />
+                    </div>
+                    <div id="chatbox"></div>
+                    <div id="inputRow">
+                        <input type="text" id="userInput" placeholder="Nachricht eingeben..." autocomplete="off" />
+                        <button id="sendBtn">Senden</button>
+                    </div>
+                    <button id="saveBtn">Chat speichern</button>
+                    <script>
+                        const chatbox = document.getElementById('chatbox');
+                        const userInput = document.getElementById('userInput');
+                        const sendBtn = document.getElementById('sendBtn');
+                        const saveBtn = document.getElementById('saveBtn');
+                        let chatHistory = [];
+
+                        function addMsg(text, sender, typing=false) {
+                            const div = document.createElement('div');
+                            div.className = 'msg ' + sender;
+                            chatbox.appendChild(div);
+                            chatHistory.push({text, sender});
+                            if (!typing) {
+                                // Als Textknoten einfügen (XSS-Schutz)
+                                div.appendChild(document.createTextNode(text));
+                                chatbox.scrollTop = chatbox.scrollHeight;
+                                return;
+                            }
+                            // Tipp-Animation für KI (sicher)
+                            let i = 0;
+                            function typeNext() {
+                                if (i <= text.length) {
+                                    div.textContent = '';
+                                    div.appendChild(document.createTextNode(text.slice(0, i)));
+                                    chatbox.scrollTop = chatbox.scrollHeight;
+                                    i++;
+                                    setTimeout(typeNext, 22);
+                                }
+                            }
+                            typeNext();
+                        }
+                        // Chat speichern als Textdatei
+                        saveBtn.onclick = function() {
+                            let text = '';
+                            for (const msg of chatHistory) {
+                                text += (msg.sender === 'user' ? 'Du: ' : 'KI: ') + msg.text + '\n';
+                            }
+                            const blob = new Blob([text], {type: 'text/plain'});
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = 'chat.txt';
+                            document.body.appendChild(a);
+                            a.click();
+                            setTimeout(() => {
+                                document.body.removeChild(a);
+                                URL.revokeObjectURL(url);
+                            }, 100);
+                        };
+
+
+                        function simpleBotResponse(userText) {
+                            const t = userText.toLowerCase();
+                            // Einfache "schlaue" Antworten mit Zufall und Variation
+                            const antworten = [
+                                'Das ist eine spannende Frage! Was denkst du selbst darüber?',
+                                'Interessant! Kannst du das näher erklären?',
+                                'Dazu gibt es viele Meinungen. Was ist deine?',
+                                'Ich finde das Thema sehr faszinierend.',
+                                'Das klingt nach einer komplexen Angelegenheit.',
+                                'Darüber könnte man lange diskutieren!',
+                                'Kannst du ein Beispiel geben?',
+                                'Das ist ein gutes Thema zum Nachdenken.',
+                                'Ich bin mir nicht sicher, aber ich kann versuchen, dir zu helfen.',
+                                'Erzähl mir mehr dazu!'
+                            ];
+                            // Einfache Erkennung für Begrüßung, Dank, Name, Uhrzeit, Datum
+                            if (
+                                t.includes('wer') &&
+                                (t.includes('erfunden') || t.includes('entwickelt') || t.includes('gemacht') || t.includes('gebaut') || t.includes('programmiert') || t.includes('creator')) &&
+                                (t.includes('dich') || t.includes('chatbot') || t.includes('euch') || t.includes('bot'))
+                            ) {
+                                return 'Ich wurde von nuttyboi361 erfunden und programmiert.';
+                            }
+                            if (t.includes('spotify')) return 'Spotify ist ein beliebter Musik-Streaming-Dienst, mit dem du Millionen von Songs und Podcasts hören kannst. Nutzt du Spotify oft?';
+                            if (t.includes('hallo') || t.includes('hi')) return 'Hallo! Wie kann ich dir helfen?';
+                            if (t.includes('name')) return 'Ich heiße Chatbot und bin dein digitaler Assistent.';
+                            if (t.includes('zeit')) return 'Die aktuelle Uhrzeit ist: ' + new Date().toLocaleTimeString();
+                            if (t.includes('datum')) return 'Heute ist: ' + new Date().toLocaleDateString();
+                            if (t.includes('wetter')) return 'Ich kann das Wetter leider nicht abrufen.';
+                            if (t.includes('wie geht') || t.includes('geht es dir')) return 'Mir geht es gut, danke! Und dir?';
+                            if (t.includes('danke')) return 'Gern geschehen!';
+                            if (t.includes('hilfe')) return 'Stelle mir einfach eine Frage oder sage "Hallo"!';
+                            // Für alles andere: ehrlich sein
+                            return 'Dazu habe ich leider keine gesicherten Informationen. Möchtest du gemeinsam nachschauen oder etwas anderes fragen?';
+                        }
+
+                        function sendMsg() {
+                            const text = userInput.value.trim();
+                            if (!text) return;
+                            addMsg(text, 'user');
+                            userInput.value = '';
+                            userInput.focus();
+                            setTimeout(() => {
+                                const response = simpleBotResponse(text);
+                                addMsg(response, 'bot', true);
+                            }, 400);
+                        }
+
+                        sendBtn.onclick = sendMsg;
+                        userInput.addEventListener('keydown', function(e) {
+                            if (e.key === 'Enter') sendMsg();
+                        });
+                    </script>
+                </body>
+                </html>
